@@ -1,81 +1,51 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { logOut } from '../author/operations';
-import {
-  fetchContacts,
-  addContact,
-  deleteContact,
-  editContact,
-} from './operations';
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchContacts, addContact, deleteContact } from "./operations";
+import { logout } from "../auth/operations";
 
-const handlePending = state => {
-  state.isLoading = true;
+const handlePending = (state) => {
+  state.error = null;
+  state.loading = true;
 };
 
-const handleRejected = (state, action) => {
-  state.isLoading = false;
-  state.error = action.payload;
+const handleRejected = (state) => {
+  state.loading = false;
+  state.error = true;
 };
 
 const contactsSlice = createSlice({
-  name: 'contacts',
+  name: "contacts",
   initialState: {
     items: [],
-    isLoading: false,
+    loading: false,
     error: null,
-    toast: '',
   },
-  reducers: {
-    setToast: (state, action) => {
-      state.toast = action.payload;
-    },
-    setContactError: (state, action) => {
-      state.error = action.payload;
-    },
-  },
-
-  extraReducers: builder => {
+  extraReducers: (builder) =>
     builder
       .addCase(fetchContacts.pending, handlePending)
       .addCase(fetchContacts.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = null;
+        state.loading = false;
         state.items = action.payload;
       })
       .addCase(fetchContacts.rejected, handleRejected)
       .addCase(addContact.pending, handlePending)
       .addCase(addContact.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = null;
+        state.loading = false;
         state.items.push(action.payload);
-        state.toast = 'add';
       })
       .addCase(addContact.rejected, handleRejected)
       .addCase(deleteContact.pending, handlePending)
       .addCase(deleteContact.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.error = null;
-        const index = state.items.findIndex(
-          task => task.id === action.payload.id
+        state.loading = false;
+        state.items = state.items.filter(
+          (contact) => contact.id !== action.payload.id
         );
-        state.items.splice(index, 1);
-        state.toast = 'del';
       })
       .addCase(deleteContact.rejected, handleRejected)
-      .addCase(logOut.fulfilled, state => {
+      .addCase(logout.fulfilled, (state) => {
         state.items = [];
         state.error = null;
-        state.isLoading = false;
-      })
-      .addCase(editContact.pending, handlePending)
-      .addCase(editContact.fulfilled, (state, action) => {
-        state.toast = 'edit';
-        state.isLoading = false;
-        state.items = state.items.map(contact => {
-          return contact.id === action.payload.id ? action.payload : contact;
-        });
-      })
-      .addCase(editContact.rejected, handleRejected);
-  },
+        state.loading = false;
+      }),
 });
-export const { setToast, setContactError } = contactsSlice.actions;
+
 export const contactsReducer = contactsSlice.reducer;

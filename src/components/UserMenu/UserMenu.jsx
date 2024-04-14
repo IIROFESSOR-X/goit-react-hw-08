@@ -1,26 +1,22 @@
-import { useDispatch } from 'react-redux';
-import { logOut } from '../../redux/author/operations';
-import { useAuth } from '../../hooks';
-import css from './UserMenu.module.css';
-import { Button, Typography } from '@mui/material';
-import { FaRegCircleUser } from 'react-icons/fa6';
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser } from "../../redux/auth/selectors";
+import { logout } from "../../redux/auth/operations";
+import { Button } from "@mui/material";
+import css from "./UserMenu.module.css";
 
-const UserMenu = () => {
+export default function UserMenu() {
   const dispatch = useDispatch();
-
-  const { user } = useAuth();
-
+  const user = useSelector(selectUser);
   return (
-    <div className={css.wrapper}>
-      <Typography sx={{ mr: 5 }} className={css.username}>
-        <FaRegCircleUser size="22" /> {user.name}
-      </Typography>
-
-      <Button color="inherit" variant="text" onClick={() => dispatch(logOut())}>
-        Logout
+    <div className={css.div}>
+      <p className={css.text}>Welcome, {user.name}</p>
+      <Button
+        variant="contained"
+        type="button"
+        onClick={() => dispatch(logout())}
+      >
+        Log Out
       </Button>
     </div>
   );
-};
-
-export default UserMenu;
+}

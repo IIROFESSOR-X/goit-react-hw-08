@@ -1,26 +1,24 @@
-import { useAuth } from '../../hooks';
-import css from './Navigation.module.css';
-import Link from '@mui/material/Link';
+import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
+import { selectIsLoggedIn } from "../../redux/auth/selectors";
+import css from "./Navigation.module.css";
+import clsx from "clsx";
 
-const Navigation = () => {
-  const { isLoggedIn } = useAuth();
-
+export default function Navigation() {
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const buildLinkClass = ({ isActive }) => {
+    return clsx(css.link, isActive && css.active);
+  };
   return (
-    <nav>
-      <Link color="inherit" href="/" underline="none" className={css.link}>
+    <nav className={css.nav}>
+      <NavLink className={buildLinkClass} to="/">
         Home
-      </Link>
+      </NavLink>
       {isLoggedIn && (
-        <Link
-          color="inherit"
-          href="/contacts"
-          underline="none"
-          className={css.link}
-        >
+        <NavLink className={buildLinkClass} to="/contacts">
           Contacts
-        </Link>
+        </NavLink>
       )}
     </nav>
   );
-};
-export default Navigation;
+}

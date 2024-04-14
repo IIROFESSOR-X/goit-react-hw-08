@@ -1,45 +1,24 @@
-import Navigation from '../Navigation/Navigation';
-import UserMenu from '../UserMenu/UserMenu';
-import AuthNav from '../AuthNav/AuthNav';
-import { useAuth } from '../../hooks';
-import css from './AppBar.module.css';
-import AppBar from '@mui/material/AppBar';
-import { Button, Toolbar } from '@mui/material';
-import SearchBox from '../SearchBox/SearchBox';
-import { useDispatch, useSelector } from 'react-redux';
-import { setAddContactModal } from '../../redux/modal/slice';
-import { selectAddModal } from '../../redux/modal/selectors';
-import { useLocation } from 'react-router-dom';
+import Navigation from "../Navigation/Navigation";
 
-const AppBars = () => {
-  const { isLoggedIn } = useAuth();
-  const dispatch = useDispatch();
-  const AddModal = useSelector(selectAddModal);
-  const location = useLocation();
-  const isContactPage = location.pathname.includes('contacts');
+import AuthNavigation from "../AuthNavigation/AuthNavigation";
+import { useSelector } from "react-redux";
+import {
+  selectIsLoggedIn,
+  selectIsRefreshing,
+} from "../../redux/auth/selectors";
+import UserMenu from "../UserMenu/UserMenu";
+import css from "./AppBar.module.css";
+import clsx from "clsx";
 
-  const toggleAddContactModal = () => {
-    dispatch(setAddContactModal(!AddModal));
-  };
-
+export default function AppBar() {
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const isRefreshing = useSelector(selectIsRefreshing);
   return (
-    <AppBar sx={{ mb: 3 }} position="absolute">
-      <Toolbar>
-        <div className={css.wrapper}>
-          <Navigation />
-          {isLoggedIn && isContactPage && (
-            <div className={css.tools}>
-              <Button onClick={toggleAddContactModal} color={'inherit'}>
-                Add contact
-              </Button>
-              <SearchBox />
-            </div>
-          )}
-          <div>{isLoggedIn ? <UserMenu /> : <AuthNav />}</div>
-        </div>
-      </Toolbar>
-    </AppBar>
+    <header className={clsx(css.appBar, css.container)}>
+      <Navigation />
+      {!isRefreshing && (
+        <div>{isLoggedIn ? <UserMenu /> : <AuthNavigation />}</div>
+      )}
+    </header>
   );
-};
-
-export default AppBars;
+}

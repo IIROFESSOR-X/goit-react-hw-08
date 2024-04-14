@@ -1,20 +1,11 @@
-.header {
+.appBar {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  border-bottom: 1px solid #2a363b;
 }
-.wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-left: 150px;
-  padding-right: 150px;
-}
-.tools {
-  display: flex;
-  align-items: center;
-  column-gap: 30px;
+.container {
+  padding-left: 20px;
+  padding-right: 20px;
 }

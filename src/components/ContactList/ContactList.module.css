@@ -1,14 +1,7 @@
-.list {
+.box {
   display: flex;
+  flex-direction: row;
+  width: 700px;
+  gap: 8px;
   flex-wrap: wrap;
-  gap: 15px;
-  padding-top: 120px;
-}
-.item {
-  width: calc((100% - 45px) / 4);
-}
-.noContacts {
-  font-size: 22px;
-  margin-right: auto;
-  margin-left: auto;
 }

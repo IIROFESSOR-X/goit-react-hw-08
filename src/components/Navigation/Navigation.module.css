@@ -1,10 +1,19 @@
-.link {
-  display: inline-block;
-  text-decoration: none;
-  padding: 12px;
-  font-weight: 700;
+.nav {
+  display: flex;
+  gap: 40px;
 }
 
-.link.active {
-  color: #e84a5f;
+.link {
+  color: #e1bee7;
+  font-size: 24px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: #ffffff;
+}
+
+.active {
+  color: #ba68c8;
 }

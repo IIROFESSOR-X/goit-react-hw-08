@@ -1,75 +1,22 @@
-import css from './SearchBox.module.css';
-
-import { useDispatch, useSelector } from 'react-redux';
-import { setFilter } from '../../redux/filter/slice';
-import { selectFilter } from '../../redux/filter/selectors';
-import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
-
-const SearchBox = () => {
+import { useDispatch, useSelector } from "react-redux";
+import css from "./SearchBox.module.css";
+import { changeFilter } from "../../redux/filters/slice";
+import { selectNameFilter } from "../../redux/filters/selectors";
+import { TextField } from "@mui/material";
+import Box from "@mui/system/Box";
+export default function SearchForm() {
+  const filter = useSelector(selectNameFilter);
   const dispatch = useDispatch();
-  const searchValue = useSelector(selectFilter);
-
-  const handleChange = e => {
-    dispatch(setFilter(e.target.value.trim()));
-  };
-
   return (
-    <div className={css.container}>
-      <Search>
-        <SearchIconWrapper>
-          <SearchIcon />
-        </SearchIconWrapper>
-        <StyledInputBase
-          placeholder="Search…"
-          inputProps={{ 'aria-label': 'search' }}
-          onChange={handleChange}
-          value={searchValue}
-        />
-      </Search>
-    </div>
+    <Box className={css.box}>
+      <p className={css.text}>Find contacts by name</p>
+      <TextField
+        variant="filled"
+        size="small"
+        type="text"
+        value={filter}
+        onChange={(e) => dispatch(changeFilter(e.target.value))}
+      />
+    </Box>
   );
-};
-
-export default SearchBox;
+}

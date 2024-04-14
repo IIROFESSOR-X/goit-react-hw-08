@@ -1,51 +1,80 @@
-import { useDispatch } from 'react-redux';
-import { logIn } from '../../redux/author/operations';
-import css from './LoginForm.module.css';
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
-import InputEmailForm from '../InputEmailForm/InputEmailForm';
-import InputPasswordForm from '../InputPasswordForm/InputPasswordForm';
+import { useDispatch } from "react-redux";
+import { useFormik } from "formik";
+import { login } from "../../redux/auth/operations";
+import * as Yup from "yup";
+import Box from "@mui/system/Box";
+import { Button, TextField } from "@mui/material";
+import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
+import css from "./LoginForm.module.css";
 
-import { NavLink } from 'react-router-dom';
-
-const contactSchema = Yup.object().shape({
-  email: Yup.string().email().required('Required'),
-  password: Yup.string().min(7, 'Too Short!').required('Required'),
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .min(3, "Too short!")
+    .max(50, "Too long!")
+    .email("Must be a valid email")
+    .required("Required"),
+  password: Yup.string()
+    .min(4, "Too short!")
+    .max(50, "Too long!")
+    .required("Required"),
 });
 
-const LoginForm = () => {
+export default function LoginForm() {
   const dispatch = useDispatch();
-
-  const handleSubmit = (values, actions) => {
-    dispatch(logIn(values));
-    actions.resetForm();
-  };
-
-  const initialValues = {
-    email: '',
-    password: '',
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values, actions) => {
+      dispatch(login(values));
+      actions.resetForm();
+    },
+  });
 
   return (
-    <Formik
-      initialValues={initialValues}
-      onSubmit={handleSubmit}
-      validationSchema={contactSchema}
-      autoComplete="off"
-    >
-      <Form className={css.form}>
-        <p className={css.title}>Login</p>
-        <InputEmailForm />
-        <InputPasswordForm />
-
-        <button className={css.button} type="submit">
+    <Box className={css.box} display="flex">
+      <LockOpenOutlinedIcon
+        color="primary"
+        sx={{ fontSize: 120 }}
+        className={css.icon}
+      />
+      <form onSubmit={formik.handleSubmit} autoComplete="off">
+        <TextField
+          fullWidth
+          required
+          variant="outlined"
+          id="email"
+          sx={{
+            marginBottom: "16px",
+          }}
+          name="email"
+          label="Email"
+          type="email"
+          color="secondary"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+        />
+        <TextField
+          fullWidth
+          required
+          variant="outlined"
+          id="password"
+          sx={{
+            marginBottom: "16px",
+          }}
+          name="password"
+          label="Password"
+          type="password"
+          color="secondary"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+        />
+        <Button fullWidth variant="outlined" type="submit">
           Log In
-        </button>
-        <NavLink to="/register" className={css.link}>
-          Don't have an account? Registration
-        </NavLink>
-      </Form>
-    </Formik>
+        </Button>
+      </form>
+    </Box>
   );
-};
-export default LoginForm;
+}
